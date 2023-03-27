@@ -2,11 +2,10 @@ KENKEN
 ======
 
 This repository contains a few simple tools for those who like to solve Kenken
-puzzles.  A puzzle is represented by a graphical representation as a character
-tableau.  You can make an .eps file of the puzzle grid and print it for manual
-solving.  You can also use the brute-force recursive back-tracking solver to
-find the solution to the puzzle if you're stuck.  (This solution method is
-*not* how a human solves the puzzle.)
+puzzles (or grids).  A puzzle is represented graphically as a character tableau.
+You can make an .eps file of the puzzle grid and print it for manual solving.
+From the same representation, you can also use the brute-force recursive
+back-tracking solver to find the solution to the puzzle if you're stuck.
 
 PUZZLE REPRESENTATION
 =====================
@@ -76,7 +75,9 @@ P 7+
 PRINTING GRIDS
 ==============
 
-Use the `kenken.sh` shell script to translate the grid into a `groff` table.
+Use the `kenken.sh` shell script to translate the grid into a
+[`groff`](https://www.gnu.org/software/groff/) table.  (`groff` is pre-installed
+on pretty much any modern Unix system.)
 If you install `kenken.sh` in your search path, say /usr/local/bin, by
 ```
 
@@ -97,9 +98,10 @@ SOLVING GRIDS
 
 The file `kenken-solver.R` is simple puzzle solver written in
 [`R`](https://cran.r-project.org).  It uses a brute-force backtracking algorithm
-to recursively solve a puzzle, not at all the way a human solves Kenken puzzles.
+to recursively solve a puzzle, *not at all* the way a human solves one.
 
-First start `R` and load the solver code.  Then you can solve any puzzle (or
+To use it, first start `R` and load the solver code.  Then you can solve any
+puzzle (or
 puzzles) by using the function `ksolve` read a file and solve a puzzle in it.
 By default, it will solve the first puzzle it finds in the file.  If the file
 contains more than one puzzle, provide the puzzle number (starting from 1).
@@ -109,13 +111,13 @@ solved with ~1000).  There are 144 unique 4x4 grids and about 25 million unique
 6x6 grids, so even though this is a brute-force solution method, by avoiding
 futile trial solutions the size of the search space is considerably reduced.
 ```
-    R                           # invoke R, command line input
-    source('kenken-solver.R')   # load solver code
-    ksolve('todays-grid')       # solve the puzzle grid in "todays-grid"
+    #R                            # invoke R, command line input
+    > source('kenken-solver.R')   # load solver code
+    > ksolve('todays-grid')       # solve the puzzle grid in "todays-grid"
 
-    ksolve('todays-grid',5)     # solve the 5th puzzle in the file
+    > ksolve('todays-grid',5)     # solve the 5th puzzle in the file
 
-    q()                         # this is how you quit R
+    > q()                         # this is how you quit R
 ```
 
 If you are curious about the solution method, you can invoke a trace option to
