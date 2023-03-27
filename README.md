@@ -7,10 +7,10 @@ You can make an .eps file of the puzzle grid and print it for manual solving.
 From the same representation, you can also use the brute-force recursive
 back-tracking solver to find the solution to the puzzle if you're stuck.
 
-PUZZLE REPRESENTATION
-=====================
+GRID REPRESENTATION
+===================
 
-Puzzle grids up to 9x9 can be represented.  The representation is simple.
+Puzzle grids up to 9x9 can be represented.  The scheme is simple.
 A grid of letters defines each group of cells that yields a value under the
 designated operation, addition +, subtraction -, multiplication x, and
 division /.  A sample of a 4x4 grid is:
@@ -30,7 +30,7 @@ F 1-
 ```
 which when printed looks like ![this grid image](/4x4.png).
 
-If there is more than one puzzle in a file, put a header line to introduce
+If there is more than one puzzle in a file, use a header line to introduce
 each new puzzle grid, for example:
 ```
 
@@ -102,9 +102,11 @@ to recursively solve a puzzle, *not at all* the way a human solves one.
 
 To use it, first start `R` and load the solver code.  Then you can solve any
 puzzle (or
-puzzles) by using the function `ksolve` read a file and solve a puzzle in it.
-By default, it will solve the first puzzle it finds in the file.  If the file
-contains more than one puzzle, provide the puzzle number (starting from 1).
+puzzles) by using the function `ksolve` to read a file and solve a puzzle in it.
+By default, the function will solve the first puzzle it finds in the file.
+If the file
+contains more than one puzzle, provide the puzzle number (starting from 1) as
+the second arg after the file name.
 Depending on the structure of the puzzle, it will take up to 10 or so trials to
 solve a 4x4 puzzle, and up to 100,000 or so to solve a 6x6 (though most are
 solved with ~1000).  There are 144 unique 4x4 grids and about 25 million unique
