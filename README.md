@@ -29,6 +29,7 @@ D 2-
 E 6+
 F 1-
 ```
+which when printed looks like ![this grid image](/4x4.png).
 
 If there is more than one puzzle in a file, put a header line to introduce
 each new puzzle grid, for example:
