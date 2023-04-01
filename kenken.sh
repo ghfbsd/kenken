@@ -68,7 +68,7 @@ func pch(i,j){
    return ""
 }
 func err(msg){ printf "**%s (line %d)\n",msg,NR > "/dev/tty"; exit 1 }
-NF==1 && /^[0-9A-Z][0-9A-Z]*$/{ ## input grid - n characters per line
+NF==1 && /^[0-9A-Za-z][0-9A-Za-z]*$/{ ## input grid - n characters per line
    gl=length($1)
    if (n && gs!=gl) err(sprintf("Mixing %dx%d and %dx%d grid!",gs,gl))
    if (!n) {gs = gl; if(gl>9) err("Max grid size is 9x9")

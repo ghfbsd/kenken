@@ -69,7 +69,7 @@ board<-function(file,N=1) {
    ## Remove extraneous punctuation and blank lines.
    nblnk <- nchar(txt) > 0
    for(i in 1:length(txt)) {               ## Tidy up text
-      if (1 == regexpr('^[A-Z]  *[1-9][0-9]*[+x/-]',txt[i])) break
+      if (1 == regexpr('^[A-Za-z]  *[1-9][0-9]*[+x/-]',txt[i])) break
       txt[i] <- base::sub('#.*',"",txt[i]) ## Strip comments
       txt[i] <- gsub(' ',"",txt[i])        ## Delete blanks
      #txt[i] <- gsub('[^0-9]','_',txt[i])  ## Non-digits become underscores
@@ -85,7 +85,7 @@ board<-function(file,N=1) {
 	'characters in grid line',i),'\n')
       return(NA)
    }
-   pat <- sprintf('[A-Z1-%d]{%d}',n,n)
+   pat <- sprintf('[A-Za-z1-%d]{%d}',n,n)
    for(i in 1:n) if (1 != regexpr(pat,txt[i])) {
       cat(paste('Invalid character in grid line',i),'\n')
       return(NA)
@@ -96,7 +96,7 @@ board<-function(file,N=1) {
    m <- matrix(unlist(strsplit(txt[1:n],NULL)),n,n,byrow=TRUE)
    for(i in seq_along(txt)[-(1:n)]) {  ## Parse groups
       l <- regexpr(
-         '[A-Z]  *(?<val>[1-9][0-9]*)(?<op>[+x/-])', txt[i], perl=TRUE
+         '[A-Za-z]  *(?<val>[1-9][0-9]*)(?<op>[+x/-])', txt[i], perl=TRUE
       )
       if (l != 1) {
          cat(sprintf('Group %d not recognized: "%s"',i-n,txt[i]),'\n')

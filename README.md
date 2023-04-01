@@ -93,12 +93,46 @@ then you can print out a puzzle grid in a file `todays-grid` via,
 ```
 and then print `/tmp/grid.eps` for your solution enjoyment.
 
+GETTING GRIDS
+=============
+
+Transcribe them from your local newspaper into the grid format, or, if you
+know a puzzle number, download them from the puzzle creation site based on
+puzzle number.  Install the download tool in a directory accessible in your
+search path, say /usr/local/bin, by
+```
+
+    install -c -m 755 kload.sh /usr/local/bin/kload
+
+```
+Then, to obtain puzzle numbered XXXXXX (usually six digits), download it:
+```
+
+    kload XXXXXX > todays-grid
+
+```
+and print it and/or solve it.  `kload` will do a couple of other things.
+To print out a puzzle's solution, try `kload XXXXXX solved`.  If you want to
+look at various internal representations of the grid, look at the shell script
+code and try the other options.
+
 SOLVING GRIDS
 =============
 
 The file `kenken-solver.R` is simple puzzle solver written in
 [`R`](https://cran.r-project.org).  It uses a brute-force backtracking algorithm
-to recursively solve a puzzle, *not at all* the way a human solves one.
+to recursively solve a puzzle, *not at all* the way a human solves one; there
+are simply too many possibilities.
+
+|Grid size|Possibilities|
+|---------|-------------|
+|   3x3   |  12         |
+|   4x4   |  144        |
+|   5x5   |  34560      |
+|   6x6   |  ~25 million|
+|   7x7   | ~125 billion|
+|   8x8   | 5x10**15    |
+|   9x9   | 5x10**19    |
 
 To use it, first start `R` and load the solver code.  Then you can solve any
 puzzle (or
@@ -107,11 +141,6 @@ By default, the function will solve the first puzzle it finds in the file.
 If the file
 contains more than one puzzle, provide the puzzle number (starting from 1) as
 the second arg after the file name.
-Depending on the structure of the puzzle, it will take up to 10 or so trials to
-solve a 4x4 puzzle, and up to 100,000 or so to solve a 6x6 (though most are
-solved with ~1000).  There are 144 unique 4x4 grids and about 25 million unique
-6x6 grids, so even though this is a brute-force solution method, by avoiding
-futile trial solutions the size of the search space is considerably reduced.
 ```
     #R                            # invoke R, command line input
     > source('kenken-solver.R')   # load solver code
@@ -121,6 +150,12 @@ futile trial solutions the size of the search space is considerably reduced.
 
     > q()                         # this is how you quit R
 ```
+
+Depending on the structure of the puzzle, it will take up to 10 or so trials
+to solve a 4x4 puzzle, and up to 100,000 or so to solve a 6x6 (though most are
+solved with ~1000).
+Even though this is a brute-force solution method, it avoids
+futile trial solutions, considerably reducing the search space.
 
 If you are curious about the solution method, you can invoke a trace option to
 see the progress of the backtracking search by adding a third arg to `ksolve`:
