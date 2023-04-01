@@ -198,7 +198,7 @@ genfill <- function(grp, grid, cnst=NULL){
    choices[chk & !dups,,drop=FALSE]               ## these are OK
 }
 
-ksolve <- function(file,N=1,trace=FALSE){
+ksolve <- function(file,N=1,trace=FALSE,odo=TRUE){
    bd <- board(file,N)                ## Read board
    if (is.na(bd[1])) stop("**Bad puzzle description",call.=FALSE)
    gr <- attr(bd,'grid')              ## Get initial grid
@@ -207,12 +207,16 @@ ksolve <- function(file,N=1,trace=FALSE){
       dec=TRUE,
       index=TRUE
    )$ix
+
+   ## Set up call count and odometer display if requested (and not tracing)
    n <<- 0
+   odo <- c(ifelse(odo & !trace,1,0),length(ix))
 
    cat(sprintf("Solving %s...\n",attr(bd,'ID')))
-   ok <-recurse(bd,gr,ix,trace)       ## Attempt solution
+   ok <-recurse(bd,gr,ix,trace,odo)   ## Attempt solution
    if (ok){                           ## Print out solution
-      cat(sprintf("Solution after %d positions examined: \n",n))
+      odo <- ifelse(odo[1]>0,'\n','')
+      cat(sprintf("%sSolution after %d positions examined: \n",odo,n))
       print(attr(ok,'grid'))
    } else
       cat(sprintf("*** No solution after %d tries for puzzle in %s.\n",n,file))
@@ -220,13 +224,13 @@ ksolve <- function(file,N=1,trace=FALSE){
 
 ## Recursive backtrack algorithm.  Called via:
 ##
-##    ok <- recurse(board, grid, gix)
+##    ok <- recurse(board, grid, gix, trace, odo)
 ##
 ## with:
 ##
 ##    board -- Board layout (static).  This is a list of lists, one
 ##             list element for each group of boxes yielding the
-##             arithmetic retuls.  Each box group has
+##             arithmetic result.  Each box group has
 ##             key= ID of box from board tableau (A-Z)
 ##             n= number of boxes in group
 ##             row[1:n]=, col[1:n]= row and col of each box
@@ -234,12 +238,18 @@ ksolve <- function(file,N=1,trace=FALSE){
 ##             opn= value of operation
 ##    grid  -- nxn matrix of grid entries (NA if not yet set)
 ##    gix   -- m(<=n) - vector of group index of choices being tried
+##    trace -- logical whether to display grid at each stage
+##    odo   -- odometer display of progress towards grid solution
 ##
 ## Function result is TRUE or FALSE.  The return value if TRUE has the
 ## attribute 'grid' which gives the solved board position.
 
-recurse <- function(board, grid, gix, dbg=FALSE){
+recurse <- function(board, grid, gix, dbg=FALSE, odo=NA){
    n <<- n + 1
+   if (odo[1]>0){
+      level <- paste(strrep(">",odo[1]),strrep("-",diff(odo)),'|',sep='')
+      cat(sprintf("%s %d\r",level,n))
+   }
    gp <- board[[ gix[1] ]]            ## Get group for current group index
    choices <- genfill(gp,grid)        ## Generate choices based on current grid
    ok <- nrow(choices) > 0
@@ -254,7 +264,7 @@ recurse <- function(board, grid, gix, dbg=FALSE){
             cat(sprintf("Try group %d, choice %d (pos. %d):\n",gix[1],i,n))
          }
          if (length(gix) <= 1) break
-         ok <- recurse(board, gnew, gix[-1], dbg)
+         ok <- recurse(board, gnew, gix[-1], dbg, odo+c(1,0))
          if (ok) break                ## If a viable (or last) choice, use it
          ## Otherwise, try next choice until all exhausted.
       }

@@ -151,6 +151,12 @@ the second arg after the file name.
     > q()                         # this is how you quit R
 ```
 
+If you don't want to see the progress odometer, add `odo=FALSE` to the
+`ksolve` args, e.g.
+```
+    ksolve('todays-grid',odo=FALSE)
+```
+
 Depending on the structure of the puzzle, it will take up to 10 or so trials
 to solve a 4x4 puzzle, and up to 100,000 or so to solve a 6x6 (though most are
 solved with ~1000).
