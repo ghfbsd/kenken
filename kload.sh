@@ -23,6 +23,7 @@
 ## Contributions acknowledged with thanks.
 
 mode=${2:-parsed} tmp=/tmp/tmp$$
+trap "/bin/rm -f $tmp" EXIT
 usage() {
    [ $# -gt 0 ] && echo "$*" >&2
    echo "usage: $0 PUZZLE_ID { raw | cooked | parsed | solved }" >&2
@@ -207,4 +208,3 @@ else
    ## Anything else is an error
    usage "**Don't recognize arg \"${mode}\""
 fi
-/bin/rm -f $tmp
