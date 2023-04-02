@@ -129,8 +129,8 @@ are simply too many possibilities.
 |   3x3   | $12$              |
 |   4x4   | $144$             |
 |   5x5   | $34560$           |
-|   6x6   | ~$25$ million     |
-|   7x7   | ~$125$ billion    |
+|   6x6   | $\sim 25$ million |
+|   7x7   | $\sim 125$ billion|
 |   8x8   | $5\times 10^{15}$ |
 |   9x9   | $5\times 10^{19}$ |
 
