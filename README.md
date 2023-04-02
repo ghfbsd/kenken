@@ -124,15 +124,15 @@ The file `kenken-solver.R` is simple puzzle solver written in
 to recursively solve a puzzle, *not at all* the way a human solves one; there
 are simply too many possibilities.
 
-|Grid size|  Possibilities   |
-|---------|------------------|
-|   3x3   |  12              |
-|   4x4   |  144             |
-|   5x5   |  34560           |
-|   6x6   |  ~25 million     |
-|   7x7   | ~125 billion     |
-|   8x8   | $5\times 10^{15}$|
-|   9x9   | $5\times 10^{19}$|
+|Grid size|  Possibilities    |
+|---------|-------------------|
+|   3x3   | $12$              |
+|   4x4   | $144$             |
+|   5x5   | $34560$           |
+|   6x6   | ~$25$ million     |
+|   7x7   | ~$125$ billion    |
+|   8x8   | $5\times 10^{15}$ |
+|   9x9   | $5\times 10^{19}$ |
 
 To use it, first start `R` and load the solver code.  Then you can solve any
 puzzle (or

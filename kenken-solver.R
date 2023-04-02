@@ -198,13 +198,20 @@ genfill <- function(grp, grid, cnst=NULL){
    choices[chk & !dups,,drop=FALSE]               ## these are OK
 }
 
-ksolve <- function(file,N=1,trace=FALSE,odo=TRUE){
+ksolve <- function(file,N=1,trace=FALSE,odo=TRUE,rev=FALSE){
+   ## file  - file name with grid description
+   ## N     - which grid in file to solve (first is default)
+   ## trace - controls dump of grid backtracking (voluminous)
+   ## odo   - controls odometer display
+   ## rev   - controls whether biggest groups in grid solved first (TRUE) or
+   ##         last (FALSE).  Last seems to be the best choice on average based
+   ##         on solutions of 7x7 grids.
    bd <- board(file,N)                ## Read board
    if (is.na(bd[1])) stop("**Bad puzzle description",call.=FALSE)
    gr <- attr(bd,'grid')              ## Get initial grid
-   ix <- sort(                        ## Order groups into largest first
+   ix <- sort(                        ## Order groups largest/smallest
       vapply(seq_along(bd),function(i)bd[[i]]$n,1),
-      dec=TRUE,
+      dec=rev,                        ## Smallest group first seems faster
       index=TRUE
    )$ix
 
