@@ -198,14 +198,16 @@ genfill <- function(grp, grid, cnst=NULL){
    choices[chk & !dups,,drop=FALSE]               ## these are OK
 }
 
-ksolve <- function(file,N=1,trace=FALSE,odo=TRUE,rev=FALSE){
+ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
    ## file  - file name with grid description
    ## N     - which grid in file to solve (first is default)
-   ## trace - controls dump of grid backtracking (voluminous)
+   ## trc   - controls dump of grid backtracking (voluminous)
    ## odo   - controls odometer display
    ## rev   - controls whether biggest groups in grid solved first (TRUE) or
    ##         last (FALSE).  Last seems to be the best choice on average based
    ##         on solutions of 7x7 grids.
+   ## all   - find ALL solutions, not just first
+
    bd <- board(file,N)                ## Read board
    if (is.na(bd[1])) stop("**Bad puzzle description",call.=FALSE)
    gr <- attr(bd,'grid')              ## Get initial grid
@@ -217,21 +219,23 @@ ksolve <- function(file,N=1,trace=FALSE,odo=TRUE,rev=FALSE){
 
    ## Set up call count and odometer display if requested (and not tracing)
    n <<- 0
-   odo <- c(ifelse(odo & !trace,1,0),length(ix))
+   odo <- c(ifelse(odo & !trc,1,0),length(ix))
+   rsol <<- list()
 
    cat(sprintf("Solving %s...\n",attr(bd,'ID')))
-   ok <-recurse(bd,gr,ix,trace,odo)   ## Attempt solution
-   if (ok){                           ## Print out solution
+   ok <-recurse(bd,gr,ix,trc,odo,all) ## Attempt solution
+   if (ok || (all && length(rsol)>0)){## Print out solution
       odo <- ifelse(odo[1]>0,'\n','')
       cat(sprintf("%sSolution after %d positions examined: \n",odo,n))
-      print(attr(ok,'grid'))
+      for(g in rsol) print(g)
    } else
-      cat(sprintf("*** No solution after %d tries for puzzle in %s.\n",n,file))
+      cat(sprintf("*** No solution after %d tries for puzzle in %s.\n",
+                  n,file))
 }
 
 ## Recursive backtrack algorithm.  Called via:
 ##
-##    ok <- recurse(board, grid, gix, trace, odo)
+##    ok <- recurse(board, grid, gix, trace, odo, all)
 ##
 ## with:
 ##
@@ -247,11 +251,12 @@ ksolve <- function(file,N=1,trace=FALSE,odo=TRUE,rev=FALSE){
 ##    gix   -- m(<=n) - vector of group index of choices being tried
 ##    trace -- logical whether to display grid at each stage
 ##    odo   -- odometer display of progress towards grid solution
+##    all   -- find all solutions, not just the first encountered
 ##
-## Function result is TRUE or FALSE.  The return value if TRUE has the
-## attribute 'grid' which gives the solved board position.
+## Function result is TRUE or FALSE.  If the return value is TRUE,
+## the solution(s) are in the global list var "rsol".
 
-recurse <- function(board, grid, gix, dbg=FALSE, odo=NA){
+recurse <- function(board, grid, gix, dbg, odo=NA, all=NA){
    n <<- n + 1
    if (odo[1]>0){
       level <- paste(strrep(">",odo[1]),strrep("-",diff(odo)),'|',sep='')
@@ -261,21 +266,24 @@ recurse <- function(board, grid, gix, dbg=FALSE, odo=NA){
    choices <- genfill(gp,grid)        ## Generate choices based on current grid
    ok <- nrow(choices) > 0
    if (ok) {
-      for(i in 1:nrow(choices)){      ## For each choice ...
+      for(i in 1:nrow(choices)) {     ## For each choice ...
          gnew <- grid
-         for(k in 1:ncol(choices)){   ## ... fill the grid
+         for(k in 1:ncol(choices)) {  ## ... fill the grid
             gnew[gp$row[k],gp$col[k]] <- choices[i,k]
          }
          if (dbg) {
             print(gnew)
             cat(sprintf("Try group %d, choice %d (pos. %d):\n",gix[1],i,n))
          }
-         if (length(gix) <= 1) break
-         ok <- recurse(board, gnew, gix[-1], dbg, odo+c(1,0))
-         if (ok) break                ## If a viable (or last) choice, use it
+         if (length(gix) <= 1) {
+            rsol[[length(rsol)+1]] <<- gnew
+            break
+         }
+         ok <- recurse(board, gnew, gix[-1], dbg, odo+c(1,0), all)
+         if (ok && !all) break
          ## Otherwise, try next choice until all exhausted.
       }
-      if (ok && length(gix) <= 1) attr(ok,'grid') <- gnew
+      if (all && length(gix) <= 1) ok <- length(rsol) > 0
    }
    ok
 }

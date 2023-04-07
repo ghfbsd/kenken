@@ -163,6 +163,13 @@ solved with ~1000).
 Even though this is a brute-force solution method, it avoids
 futile trial solutions, considerably reducing the search space.
 
+If you think that the puzzle might have more than one solution (good ones
+don't), you can ask the solver to find them by including the keyword,
+`all=TRUE` in the args, e.g.
+```
+    ksolve('todays-grid',odo=FALSE,all=TRUE)
+```
+
 If you are curious about the solution method, you can invoke a trace option to
 see the progress of the backtracking search by adding a third arg to `ksolve`:
 
