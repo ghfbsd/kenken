@@ -97,7 +97,7 @@ GETTING GRIDS
 =============
 
 Transcribe them from your local newspaper into the grid format, or, if you
-know a puzzle number, download them from the puzzle creation site based on
+know a puzzle number, download them from the puzzle creation site based on the
 puzzle number.  Install the download tool in a directory accessible in your
 search path, say /usr/local/bin, by
 ```
@@ -105,7 +105,7 @@ search path, say /usr/local/bin, by
     install -c -m 755 kload.sh /usr/local/bin/kload
 
 ```
-Then, to obtain puzzle numbered XXXXXX (usually six digits), download it:
+Then, to obtain the puzzle numbered XXXXXX (usually six digits), download it:
 ```
 
     kload XXXXXX > todays-grid
@@ -122,10 +122,12 @@ SOLVING GRIDS
 The file `kenken-solver.R` is simple puzzle solver written in
 [`R`](https://cran.r-project.org).  It uses a brute-force backtracking algorithm
 to recursively solve a puzzle, *not at all* the way a human solves one; there
-are simply too many possibilities.
+are simply too many possibilities.  (For guidance on improving your personal
+solving skills, refer to the end of the README.)
 
 |Grid size|  Possibilities    |
 |---------|-------------------|
+|   2x2   | $2$               |
 |   3x3   | $12$              |
 |   4x4   | $144$             |
 |   5x5   | $34560$           |
@@ -165,9 +167,9 @@ futile trial solutions, considerably reducing the search space.
 
 If you think that the puzzle might have more than one solution (good ones
 don't), you can ask the solver to find them by including the keyword,
-`all=TRUE` in the args, e.g.
+`all=TRUE` in the `ksolve` args, e.g.
 ```
-    ksolve('todays-grid',odo=FALSE,all=TRUE)
+    ksolve('todays-grid',all=TRUE)
 ```
 
 If you are curious about the solution method, you can invoke a trace option to
@@ -177,3 +179,9 @@ see the progress of the backtracking search by adding a third arg to `ksolve`:
     ksolve('todays-grid',1,TRUE)
 ```
 (Be ready for a lot of output.)
+
+References
+----------
+
+1. Watkins, J. (2012).  Triangular numbers, Gaussian integers and KenKen,
+*The College Mathematics Journal*, v.43(1), 37-42.
