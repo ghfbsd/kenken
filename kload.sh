@@ -118,20 +118,25 @@ translate() {
       }
       END{
          ## Finish up cell allocation in grid for odd shapes
-         for(i=1;i<=gn;i++){
-            for(j=1;j<=gn;j++){
-               if(g[i,j] == "." && j>1 && vv[i,j-1] == "0"){
-                  g[i,j] = g[i,j-1]  # copy grid value from left
-               }
-               if(g[i,j] == "." && j<gn&& vv[i,j] == "0"){
-                  # copy grid value from right, skipping unassigned cells
-                  for(k=j+1;k<gn && g[i,k] == "." && vv[i,k] == "0";k++){
-                     continue
+         any = 1
+         while (any) {
+            any = 0
+            for(i=1;i<=gn;i++){
+               for(j=1;j<=gn;j++){
+                  if(g[i,j] == "." && j>1 && vv[i,j-1] == "0"){
+                     g[i,j] = g[i,j-1]  # copy grid value from left
                   }
-                  g[i,j] = g[i,k]
-               }
-               if(g[i,j] == "." && i>1 && hh[j,i-1] == "0"){
-                  g[i,j] = g[i-1,j]  # copy grid value from above
+                  if(g[i,j] == "." && j<gn&& vv[i,j] == "0"){
+                     # copy grid value from right, skipping unassigned cells
+                     for(k=j+1;k<gn && g[i,k] == "." && vv[i,k] == "0";k++){
+                        continue
+                     }
+                     g[i,j] = g[i,k]
+                  }
+                  if(g[i,j] == "." && i>1 && hh[j,i-1] == "0"){
+                     g[i,j] = g[i-1,j]  # copy grid value from above
+                  }
+                  if (g[i,j] == ".") any = 1
                }
             }
          }
