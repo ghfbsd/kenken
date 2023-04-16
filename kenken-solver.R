@@ -208,12 +208,12 @@ ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
    ##         on solutions of 7x7 grids.
    ## all   - find ALL solutions, not just first
 
-   bd <- board(file,N)                ## Read board
+   bd <- board(file,N)                 ## Read board
    if (is.na(bd[1])) stop("**Bad puzzle description",call.=FALSE)
-   gr <- attr(bd,'grid')              ## Get initial grid
-   ix <- sort(                        ## Order groups largest/smallest
+   gr <- attr(bd,'grid')               ## Get initial grid
+   ix <- sort(                         ## Order groups largest/smallest
       vapply(seq_along(bd),function(i)bd[[i]]$n,1),
-      dec=rev,                        ## Smallest group first seems faster
+      dec=rev,                         ## Smallest group first seems faster
       index=TRUE
    )$ix
 
@@ -223,8 +223,8 @@ ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
    rsol <<- list()
 
    cat(sprintf("Solving %s...\n",attr(bd,'ID')))
-   ok <-recurse(bd,gr,ix,trc,odo,all) ## Attempt solution
-   if (ok || (all && length(rsol)>0)){## Print out solution
+   ok <- recurse(bd,gr,ix,trc,odo,all) ## Attempt solution
+   if (ok || (all && length(rsol)>0)){ ## Print out solution
       odo <- ifelse(odo[1]>0,'\n','')
       cat(sprintf("%sSolution after %d positions examined: \n",odo,n))
       for(g in rsol) print(g)
@@ -249,7 +249,7 @@ ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
 ##             opn= value of operation
 ##    grid  -- nxn matrix of grid entries (NA if not yet set)
 ##    gix   -- m(<=n) - vector of group index of choices being tried
-##    trace -- logical whether to display grid at each stage
+##    dbg   -- logical whether to display grid at each stage
 ##    odo   -- odometer display of progress towards grid solution
 ##    all   -- find all solutions, not just the first encountered
 ##
@@ -258,7 +258,7 @@ ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
 
 recurse <- function(board, grid, gix, dbg, odo=NA, all=NA){
    n <<- n + 1
-   if (odo[1]>0){
+   if (odo[1]>0){                     ## Odometer display
       level <- paste(strrep(">",odo[1]),strrep("-",diff(odo)),'|',sep='')
       cat(sprintf("%s %d\r",level,n))
    }
@@ -271,11 +271,11 @@ recurse <- function(board, grid, gix, dbg, odo=NA, all=NA){
          for(k in 1:ncol(choices)) {  ## ... fill the grid
             gnew[gp$row[k],gp$col[k]] <- choices[i,k]
          }
-         if (dbg) {
+         if (dbg) {                   ## Print board if tracing
             print(gnew)
             cat(sprintf("Try group %d, choice %d (pos. %d):\n",gix[1],i,n))
          }
-         if (length(gix) <= 1) {
+         if (length(gix) <= 1) {      ## Found a solution; add to list
             rsol[[length(rsol)+1]] <<- gnew
             break
          }
