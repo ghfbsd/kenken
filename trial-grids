@@ -1,0 +1,67 @@
+.KK "4x4 grid"
+ABBC
+AACC
+D1CE
+DFFE
+
+A 8+
+B 5+
+C 11+
+D 2-
+E 6+
+F 1-
+
+.KK "6x6 grid"
+6AABBC
+DEEFFC
+DHEIIJ
+DHKK4J
+LMNNOO
+LMM6PP
+
+A 2/
+B 15x
+C 2/
+D 12+
+E 12+
+F 3-
+H 5-
+I 3-
+J 1-
+K 2/
+L 2/
+M 12+
+N 3-
+O 2/
+P 7+
+
+.KK "7x7 grid"
+3BBCCDE
+FGGCCDE
+FGHHIJJ
+KKLLIMN
+OPPQRMN
+OSTQRRN
+SSTUUVV
+
+B 2/
+C 20+
+D 2/
+E 1-
+F 2/
+G 24x
+H 1-
+I 1-
+J 4-
+K 2-
+L 2/
+M 6+
+N 14x
+O 1-
+P 3/
+Q 3-
+R 24x
+S 15x
+T 2-
+U 2/
+V 2/

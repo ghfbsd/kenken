@@ -180,6 +180,12 @@ see the progress of the backtracking search by adding a third arg to `ksolve`:
 ```
 (Be ready for a lot of output.)
 
+TRIAL GRIDS
+===========
+
+See `trial-grids` for a few grids to print and solve manually,
+or try the solver on.
+
 References
 ----------
 
