@@ -198,12 +198,18 @@ elif [ "$mode" = "solved" ]; then
 
 elif [ "$mode" = "parsed" ]; then
    ## parsed is the puzzle grid in our format
-   ID=$(awk '/\"id\":[0-9][0-9]*,/{
-      if (match($0,/\"id\":[0-9]*/) > 0){
-         print substr($0,RSTART+5,RLENGTH-5),"kenkenpuzzle.com"
-      } else
-         print "kenkenpuzzle.com"
-   }' $tmp)
+   ID=$(awk 'BEGIN{no=""; diff=""}
+      /\"id\":[0-9][0-9]*,/{
+         if (match($0,/\"id\":[0-9]*/) > 0) no=substr($0,RSTART+5,RLENGTH-5)
+      }
+      /\"level\":\"[a-z]*\",/{
+         if (match($0,/\"level\":\"[^\"]*\",/) > 0) {
+            diff="(" substr($0,RSTART+9,RLENGTH-11) ")"
+         }
+      }
+      END{
+         printf "%s %s kenkenpuzzle.com\n",no,diff
+      }' $tmp)
 
    getdat |
    decode |
