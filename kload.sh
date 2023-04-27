@@ -54,6 +54,7 @@ translate() {
       }
       func err(txt){printf "%s (line %d)\n",txt,NR > "/dev/tty" ; exit 1}
       func pgrid(i,j,l){
+         ## Prints grid via pgrid(); n.b.: i,j,l local variables, not args
          for(i=1;i<=gs;i++){
             l = ""; for(j=1;j<=gs;j++) l = l g[i,j]
             print l
@@ -118,8 +119,7 @@ translate() {
       }
       END{
          ## Finish up cell allocation in grid for odd shapes
-         any = 1
-         while (any) {
+         do {
             any = 0
             for(i=1;i<=gn;i++){
                for(j=1;j<=gn;j++){
@@ -139,7 +139,7 @@ translate() {
                   if (g[i,j] == ".") any = 1
                }
             }
-         }
+         } while (any)
          ## Print out completed grid
          printf ".KK \"%dx%d grid %s\"\n",gs,gs,ID; pgrid()
          print ""
@@ -200,15 +200,20 @@ elif [ "$mode" = "parsed" ]; then
    ## parsed is the puzzle grid in our format
    ID=$(awk 'BEGIN{no=""; diff=""}
       /\"id\":[0-9][0-9]*,/{
-         if (match($0,/\"id\":[0-9]*/) > 0) no=substr($0,RSTART+5,RLENGTH-5)
+         ## grid number
+         if (match($0,/\"id\":[0-9]*/) > 0) {
+            no=substr($0,RSTART+5,RLENGTH-5) " "
+         }
       }
       /\"level\":\"[a-z]*\",/{
+         ## difficulty level
          if (match($0,/\"level\":\"[^\"]*\",/) > 0) {
-            diff="(" substr($0,RSTART+9,RLENGTH-11) ")"
+            diff="(" substr($0,RSTART+9,RLENGTH-11) ") "
          }
       }
       END{
-         printf "%s %s kenkenpuzzle.com\n",no,diff
+         ## ID is combination of number & difficulty
+         printf "%s%skenkenpuzzle.com\n",no,diff
       }' $tmp)
 
    getdat |
