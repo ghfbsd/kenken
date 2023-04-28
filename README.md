@@ -105,14 +105,14 @@ search path, say /usr/local/bin, by
     install -c -m 755 kload.sh /usr/local/bin/kload
 
 ```
-Then, to obtain the puzzle numbered XXXXXX (usually six digits), download it:
+Then, to obtain the puzzle numbered N (usually five or six digits), download it:
 ```
 
-    kload XXXXXX > todays-grid
+    kload N > todays-grid
 
 ```
 and print it and/or solve it.  `kload` will do a couple of other things.
-To print out a puzzle's solution, try `kload XXXXXX solved`.  If you want to
+To print out a puzzle's solution, try `kload N solved`.  If you want to
 look at various internal representations of the grid, look at the shell script
 code and try the other options.
 
