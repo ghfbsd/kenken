@@ -2,7 +2,8 @@ KENKEN
 ======
 
 This repository contains a few simple tools for those who like to solve Kenken
-puzzles (or grids).  A puzzle is represented graphically as a character tableau.
+puzzles (or grids).  A puzzle is represented graphically as a character tableau
+that you can either type in or download to a file.
 You can make an .eps file of the puzzle grid and print it for manual solving.
 From the same representation, you can also use the brute-force recursive
 back-tracking solver to find the solution to the puzzle if you're stuck.
@@ -84,10 +85,10 @@ If you install `kenken.sh` in your search path, say /usr/local/bin, by
     install -c -m 755 kenken.sh /usr/local/bin/kenken
 
 ```
-then you can print out a puzzle grid in a file `todays-grid` via,
+then you can print out a puzzle grid in the file `trial-grids` via,
 ```
 
-    kenken < todays-grid | groff -me -t > /tmp/grid.eps
+    kenken < trial-grids | groff -me -t > /tmp/grid.eps
 
 
 ```
@@ -146,9 +147,9 @@ the second arg after the file name.
 ```
     #R                            # invoke R, command line input
     > source('kenken-solver.R')   # load solver code
-    > ksolve('todays-grid')       # solve the puzzle grid in "todays-grid"
+    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grid"
 
-    > ksolve('todays-grid',5)     # solve the 5th puzzle in the file
+    > ksolve('trial-grids',2)     # solve the 2nd puzzle in the file
 
     > q()                         # this is how you quit R
 ```
@@ -156,7 +157,7 @@ the second arg after the file name.
 If you don't want to see the progress odometer, add `odo=FALSE` to the
 `ksolve` args, e.g.
 ```
-    ksolve('todays-grid',odo=FALSE)
+    ksolve('trial-grids',odo=FALSE)
 ```
 
 Depending on the structure of the puzzle, it will take up to 10 or so trials
@@ -169,14 +170,14 @@ If you think that the puzzle might have more than one solution (good ones
 don't), you can ask the solver to find them by including the keyword,
 `all=TRUE` in the `ksolve` args, e.g.
 ```
-    ksolve('todays-grid',all=TRUE)
+    ksolve('trial-grids',all=TRUE)
 ```
 
 If you are curious about the solution method, you can invoke a trace option to
 see the progress of the backtracking search by adding a third arg to `ksolve`:
 
 ```
-    ksolve('todays-grid',1,TRUE)
+    ksolve('trial-grids',1,TRUE)
 ```
 (Be ready for a lot of output.)
 
@@ -184,7 +185,7 @@ TRIAL GRIDS
 ===========
 
 See `trial-grids` for a few grids to print and solve manually,
-or try the solver on.
+or to try the solver on.
 
 References
 ----------
