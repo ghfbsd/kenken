@@ -5,7 +5,7 @@
 
 ## Original:  1 Apr. 2023
 
-## Copyright 2017-2023 George Helffrich
+## Copyright 2017-2024 George Helffrich
 
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.

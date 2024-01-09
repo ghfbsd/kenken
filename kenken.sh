@@ -5,7 +5,7 @@
 ##    a title or to print multiple grids in the same printed output.
 ## Original:  6 Oct. 2017; Last update: 25 Mar. 2023
 
-## Copyright 2017-2023 George Helffrich
+## Copyright 2017-2024 George Helffrich
 
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -142,7 +142,7 @@ func proc(){
    ## Print out trailer
    wid = 0.7*gs
    print ".TE"
-   print "\\u\\s-8\\(co2017-2023 G. Helffrich\\s0\\d"
+   print "\\u\\s-8\\(co2017-2024 G. Helffrich\\s0\\d"
    print ".br"
    print ".mk gB"
    print ".ie \\n%=\\n(g% .sp |\\n(gTu"  ## On same page? Move back
