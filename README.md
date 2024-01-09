@@ -190,5 +190,7 @@ or to try the solver on.
 References
 ----------
 
-1. Watkins, J. (2012).  Triangular numbers, Gaussian integers and KenKen,
+- Watkins, J. (2012).  Triangular numbers, Gaussian integers and KenKen,
 *The College Mathematics Journal*, v.43(1), 37-42.
+
+- [Wolfram community discussion](https://community.wolfram.com/groups/-/m/t/613040) on solving Kenken puzzles.
