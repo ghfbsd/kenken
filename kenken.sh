@@ -94,7 +94,7 @@ func proc(){
    if (pre){
       print ".nr pp 16"
       print ".lp"
-      print ".na"
+      print ".ad l"
       pre = 0
    }
    print ".nr g% \\n%"
