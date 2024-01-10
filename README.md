@@ -181,6 +181,12 @@ see the progress of the backtracking search by adding a third arg to `ksolve`:
 ```
 (Be ready for a lot of output.)
 
+TRIAL GRIDS
+===========
+
+See `trial-grids` for a few grids to print and solve manually,
+or to try the solver on.
+
 You don't even have to download the solver to try it out.  After you start `R`
 on your own machine, type
 ```
@@ -190,13 +196,8 @@ to define the solver functions, and then type
 ```
 ksolve('https://raw.githubusercontent.com/ghfbsd/kenken/main/trial-grids')
 ```
-to solve the trial grids (or your own in a local file).
-
-TRIAL GRIDS
-===========
-
-See `trial-grids` for a few grids to print and solve manually,
-or to try the solver on.
+to solve the trial grids.  You can also solve your own grids in a local file
+this way by giving the local file name to `ksolve`.
 
 References
 ----------
