@@ -181,6 +181,17 @@ see the progress of the backtracking search by adding a third arg to `ksolve`:
 ```
 (Be ready for a lot of output.)
 
+You don't even have to download the solver to try it out.  After you start `R`
+on your own machine, type
+```
+source('https://raw.githubusercontent.com/ghfbsd/kenken/main/kenken-solver.R')
+```
+to define the solver functions, and then type
+```
+ksolve('https://raw.githubusercontent.com/ghfbsd/kenken/main/trial-grids')
+```
+to solve the trial grids (or your own in a local file).
+
 TRIAL GRIDS
 ===========
 
