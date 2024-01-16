@@ -14,15 +14,25 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-op  <- function(v) v[if(v[1]>v[2]) c(1,2) else c(2,1)] ## ordered pair
-mod <- function(v){v[1] %%  v[2]}      ## apply() won't accept `%%`
-idv <- function(v){v[1] %/% v[2]}      ## apply() won't accept `%/%`
-
 div <- function(m){                    ## / op
-   od <- apply(m,1,op)
-   ov <- apply(od,2,idv)
-   ov[ apply(od,2,mod) != 0 ] <- 0
-   ov
+
+   # This function redefines itself after calculating look-up table for
+   # unordered integer division.  It uses the lookup table to speed up the
+   # result.
+   uid <- function(m,n){               ## unordered integer division
+      mn <- m %/% n; mn[ m%%n != 0 | m <  n] <- 0L # result when m >= n or 0
+      nm <- n %/% m; nm[ n%%m != 0 | n <= m] <- 0L # result when m <  n or 0
+      mn + nm
+   }
+
+   DIV <- outer(1:9,1:9,uid)           ## defines lookup table
+   div <<- function(m)                 ## (re)defines function
+      apply(m,1,function(m)DIV[m[1],m[2]])
+   environment(div)$DIV <-             ## saves compact lookup table
+      matrix(DIV,9,9)
+   apply(m,1,                          ## gives first answer
+      function(m)DIV[m[1],m[2]]
+   )
 }
 
 sub <- function(m)abs(apply(m,1,diff)) ## - op
