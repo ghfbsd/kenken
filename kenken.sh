@@ -142,8 +142,9 @@ func proc(){
    ## Print out trailer
    wid = 0.7*gs
    print ".TE"
-   print "\\u\\s-8\\(co2017-2024 G. Helffrich\\s0\\d"
-   print ".br"
+#  print "\\u\\s-8\\(co2017-2024 G. Helffrich\\s0\\d"
+#  print ".br"
+   print ".sp"
    print ".mk gB"
    print ".ie \\n%=\\n(g% .sp |\\n(gTu"  ## On same page? Move back
    print ".el .sp |\\n(tmu"              ## Otherwise move to page top
