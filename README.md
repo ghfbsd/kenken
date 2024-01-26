@@ -213,7 +213,7 @@ to set the pace of the solution.  If you've seen enough and want to quit, type
 If you're not interested in learning but simply want to passively enjoy the
 solution progress, watch the solution movie by typing,
 ```
-    > ksolve('trial-grids',trc=FALSE)  # turn off the pause between steps
+    > ksolve('trial-grids',trc=FALSE)  # no pausing between steps
 ```
 
 Alternatively, if you just want the answer, dammit, try
