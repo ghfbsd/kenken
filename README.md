@@ -160,7 +160,7 @@ the second arg after the file name.
 ```
     #R                            # invoke R, command line input
     > source('kenken-solver.R')   # load brute-force solver code
-    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grid"
+    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grids"
 
     > ksolve('trial-grids',2)     # solve the 2nd puzzle in the file
 
@@ -180,14 +180,15 @@ Even though this is a brute-force solution method, it avoids
 futile trial solutions, considerably reducing the search space.
 
 If you think that the puzzle might have more than one solution (good ones
-don't), you can ask the solver to find them by including the keyword,
-`all=TRUE` in the `ksolve` args, e.g.
+don't), you can ask the brute-force solver to find them by including the
+keyword, `all=TRUE` in the `ksolve` args, e.g.
 ```
     ksolve('trial-grids',all=TRUE)
 ```
 
-If you are curious about the solution method, you can invoke a trace option to
-see the progress of the backtracking search by adding a third arg to `ksolve`:
+If you are masochistically curious about the solution method, you can invoke a
+trace option to see the progress of the backtracking search by adding a third
+arg to `ksolve`:
 
 ```
     ksolve('trial-grids',1,TRUE)
@@ -198,7 +199,7 @@ If you want to learn how to solve puzzles, use the logic-based solver:
 ```
     #R                            # invoke R, command line input
     > source('kenken-logic.R')    # load logic-based solver code
-    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grid"
+    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grids"
 
     > ksolve('trial-grids',2)     # solve the 2nd puzzle in the file
 
@@ -209,7 +210,7 @@ shows you the grid after it does what it said.  You hit return after each step
 to set the pace of the solution.  If you've seen enough and want to quit, type
 `q` and hit return, which aborts the solution.
 
-If you're not interested in learning but simply want to pasively enjoy the
+If you're not interested in learning but simply want to passively enjoy the
 solution progress, watch the solution movie by typing,
 ```
     > ksolve('trial-grids',trc=FALSE)  # turn off the pause between steps
@@ -217,7 +218,7 @@ solution progress, watch the solution movie by typing,
 
 Alternatively, if you just want the answer, dammit, try
 ```
-    > ksolve('trial-grids',trc=NA)  # Enough with the words, cut to the chase
+    > ksolve('trial-grids',trc=NA)  # Cut to the chase, no words please
 ```
 
 TRIAL GRIDS
