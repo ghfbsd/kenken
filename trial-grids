@@ -65,3 +65,27 @@ S 15x
 T 2-
 U 2/
 V 2/
+
+.KK "6x6 grid (hard for logic-based solvers)"
+ABBBCC
+ADEEFG
+HDIIFG
+HJJJ5L
+MMJNNL
+OO3QQQ
+
+A 2-
+B 40x
+C 5-
+D 3-
+E 2-
+F 3-
+G 2-
+H 3/
+I 7+
+J 12+
+L 3-
+M 1-
+N 1-
+O 5-
+Q 40x

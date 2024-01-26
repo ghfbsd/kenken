@@ -5,8 +5,13 @@ This repository contains a few simple tools for those who like to solve Kenken
 puzzles (or grids).  A puzzle is represented graphically as a character tableau
 that you can either type in or download to a file.
 You can make an .eps file of the puzzle grid and print it for manual solving.
-From the same representation, you can also use the brute-force recursive
-back-tracking solver to find the solution to the puzzle if you're stuck.
+From the same representation, you can also use one of the puzzle solvers to
+give you the solution if you're stuck.  The two solvers are a brute-force
+recursive back-tracking solver and a logic-based forward solver.  The
+brute-force gives you an answer (usually quickly, but some times not), whereas
+the logic-based solver gives you a step-by-step solution much the way a human
+would solve the puzzle.
+
 
 GRID REPRESENTATION
 ===================
@@ -120,11 +125,19 @@ code and try the other options.
 SOLVING GRIDS
 =============
 
-The file `kenken-solver.R` is simple puzzle solver written in
-[`R`](https://cran.r-project.org).  It uses a brute-force backtracking algorithm
-to recursively solve a puzzle, *not at all* the way a human solves one; there
-are simply too many possibilities.  (For guidance on improving your personal
-solving skills, refer to the end of the README.)
+The solvers, `kenken-solver.R` and `kenken-logic.R` are both written in
+[`R`](https://cran.r-project.org).  One, `kenken-solver.R`, uses a brute-force
+backtracking algorithm to recursively solve a puzzle, *not at all* the way a
+human solves one; there are simply too many possibilities.  The other,
+`kenken-logic.R`, is a solver based on logical rules and represents much the
+way a human would solve the puzzle.  You can run logic-based solver in a couple
+of different ways.  One just gives you the answer (not very interesting, but
+for the impatient, it's what you want).  Another draws a representation of the
+grid and shows you how it changes after each move (more instructive).  The
+third way shows you the grid, tells you what deductive rule it will use to
+eliminate one of the possiblities, and then shows you the changes to the grid -
+a tutorial mode for improving your skills.  (For other guidance on improving
+your personal solving skills, refer to the end of the README.)
 
 |Grid size|  Possibilities    |
 |---------|-------------------|
@@ -137,16 +150,16 @@ solving skills, refer to the end of the README.)
 |   8x8   | $5\times 10^{15}$ |
 |   9x9   | $5\times 10^{19}$ |
 
-To use it, first start `R` and load the solver code.  Then you can solve any
-puzzle (or
-puzzles) by using the function `ksolve` to read a file and solve a puzzle in it.
+To use it, first start `R` and load one of the solver codes.  Then you can
+solve any puzzle (or puzzles) by using the function `ksolve` to read a file
+and solve a puzzle in it.
 By default, the function will solve the first puzzle it finds in the file.
 If the file
 contains more than one puzzle, provide the puzzle number (starting from 1) as
 the second arg after the file name.
 ```
     #R                            # invoke R, command line input
-    > source('kenken-solver.R')   # load solver code
+    > source('kenken-solver.R')   # load brute-force solver code
     > ksolve('trial-grids')       # solve the puzzle grid in "trial-grid"
 
     > ksolve('trial-grids',2)     # solve the 2nd puzzle in the file
@@ -181,6 +194,32 @@ see the progress of the backtracking search by adding a third arg to `ksolve`:
 ```
 (Be ready for a lot of output.)
 
+If you want to learn how to solve puzzles, use the logic-based solver:
+```
+    #R                            # invoke R, command line input
+    > source('kenken-logic.R')    # load logic-based solver code
+    > ksolve('trial-grids')       # solve the puzzle grid in "trial-grid"
+
+    > ksolve('trial-grids',2)     # solve the 2nd puzzle in the file
+
+    > q()                         # this is how you quit R
+```
+It shows you each step along the way, telling you what it will do, and then
+shows you the grid after it does what it said.  You hit return after each step
+to set the pace of the solution.  If you've seen enough and want to quit, type
+`q` and hit return, which aborts the solution.
+
+If you're not interested in learning but simply want to pasively enjoy the
+solution progress, watch the solution movie by typing,
+```
+    > ksolve('trial-grids',trc=FALSE)  # turn off the pause between steps
+```
+
+Alternatively, if you just want the answer, dammit, try
+```
+    > ksolve('trial-grids',trc=NA)  # Enough with the words, cut to the chase
+```
+
 TRIAL GRIDS
 ===========
 
@@ -191,6 +230,10 @@ You don't even have to download the solver to try it out.  After you start `R`
 on your own machine, type
 ```
 source('https://raw.githubusercontent.com/ghfbsd/kenken/main/kenken-solver.R')
+```
+or
+```
+source('https://raw.githubusercontent.com/ghfbsd/kenken/main/kenken-logic.R')
 ```
 to define the solver functions, and then type
 ```
