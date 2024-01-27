@@ -252,3 +252,5 @@ References
 *The College Mathematics Journal*, v.43(1), 37-42.
 
 - [Wolfram community discussion](https://community.wolfram.com/groups/-/m/t/613040) on solving Kenken puzzles.
+
+- Caleb Sander's [solving rules](https://github.com/calebsander/kenken-maker).
