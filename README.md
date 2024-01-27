@@ -128,16 +128,7 @@ SOLVING GRIDS
 The solvers, `kenken-solver.R` and `kenken-logic.R` are both written in
 [`R`](https://cran.r-project.org).  One, `kenken-solver.R`, uses a brute-force
 backtracking algorithm to recursively solve a puzzle, *not at all* the way a
-human solves one; there are simply too many possibilities.  The other,
-`kenken-logic.R`, is a solver based on logical rules and represents much the
-way a human would solve the puzzle.  You can run logic-based solver in a couple
-of different ways.  One just gives you the answer (not very interesting, but
-for the impatient, it's what you want).  Another draws a representation of the
-grid and shows you how it changes after each move (more instructive).  The
-third way shows you the grid, tells you what deductive rule it will use to
-eliminate one of the possiblities, and then shows you the changes to the grid -
-a tutorial mode for improving your skills.  (For other guidance on improving
-your personal solving skills, refer to the end of the README.)
+human solves one; there are simply too many possibilities.
 
 |Grid size|  Possibilities    |
 |---------|-------------------|
@@ -150,9 +141,20 @@ your personal solving skills, refer to the end of the README.)
 |   8x8   | $5\times 10^{15}$ |
 |   9x9   | $5\times 10^{19}$ |
 
-To use it, first start `R` and load one of the solver codes.  Then you can
-solve any puzzle (or puzzles) by using the function `ksolve` to read a file
-and solve a puzzle in it.
+The other solver, `kenken-logic.R`, is a solver based on logical rules and
+represents much the way a human would solve the puzzle.  You can run the
+logic-based solver in a couple of different ways.  One just gives you the answer
+(not very interesting, but for the impatient, it's what you want).
+Another draws a representation of the
+grid and shows you how it changes after each move (more instructive).  The
+third way shows you the grid, tells you what deductive rule it will use to
+eliminate one of the possiblities, and then shows you the changes to the grid -
+a tutorial mode for improving your skills.  (For other guidance on improving
+your personal solving skills, refer to the end of the README.)
+
+To use the solvers, first start `R` and load one of the solver codes.  Then
+you can solve any puzzle (or puzzles) by using the function `ksolve` to read a
+file and solve a puzzle in it.
 By default, the function will solve the first puzzle it finds in the file.
 If the file
 contains more than one puzzle, provide the puzzle number (starting from 1) as
