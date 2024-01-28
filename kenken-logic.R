@@ -662,57 +662,50 @@ ksolve <- function(file,N=1,trc=TRUE) {
       }
       if (any(numst(st) - chg != 0)) next ## Re-start if something changed
 
-      jtest <- function(ij,col=NA) {      ## Check column for identical pairs
-         if (!all(st[ij,col,1] == length(ij))) return(FALSE)
-         q <- getij(st,ij[1],col)
-         res <- vapply(
-            2:length(ij),
-            function(i)setequal(q, getij(st,ij[i],col)),
-            TRUE
-         )
-         all(res)
-      }
+      # ***Rule 3*** Union rule
+      for(rc in 1:n) {                    ## Check each row / col
+         for(i in 2:n) {                  ## ...for repeated pairs, triples, ...
+            ccol <- combn(n,i)
+            for(j in 1:ncol(ccol)) {      ## Check next tuple: row check
+               cun <-                     ## That's the first bit
+                  getij(st,rc,ccol[1,j])
+               for(k in 2:nrow(ccol)) {   ## These are the others
+                  cun <- as.integer(union(cun, getij(st,rc,ccol[k,j])))
+               }
+               if (length(cun) != i) next ## Not same length?  Oh well ...
 
-      itest <- function(ij,row=NA) {      ## Check row for identical pairs
-         if(!all(st[row,ij,1] == length(ij))) return(FALSE)
-         q <- getij(st,row,ij[1])
-         res <- vapply(
-            2:length(ij),
-            function(i)setequal(q, getij(st,row,ij[i])),
-            TRUE
-         )
-         all(res)
-      }
+               ## We can remove cun elsewhere in row
+               old <- st
+               for(jc in (1:n)[-ccol[,j]]) st <- rmvij(st,rc,jc,cun)
+               why <- sprintf('removing (%s) from row %s by union rule',
+                  paste(cun,collapse=' '),rc)
+               update(st,old,bd,why,wait=trc)
+               break
+            }
+            if (any(numst(st)-chg != 0)) break
 
-      # ***Rule 3*** Naked tuples
-      for(tuple in 2:(n-1)){              ## Check for repeated pairs, triples,
-         pairs <- combn(n,tuple)          ##   ... in a row or col and reduce
-         for(i in 1:n) {                  ## Reduce tuples in a row or column
-            same <- apply(pairs,2,jtest,col=i)
-            if (any(same)) {              ## Examine column i
+            for(j in 1:ncol(ccol)) {      ## Check next tuple: column check
+               cun <-                     ## That's the first bit
+                  getij(st,ccol[1,j],rc)
+               for(k in 2:nrow(ccol)) {   ## These are the others
+                  cun <- as.integer(union(cun, getij(st,ccol[k,j],rc)))
+               }
+               if (length(cun) != i) next ## Not same length?  Oh well ...
+
+               ## We can remove cun elsewhere in column
                old <- st
-               ij <- pairs[,same]
-               q <- getij(st,ij[1],i)
-               for(ir in setdiff(1:n,pairs[,same])) st <- rmvij(st,ir,i,q)
-               update(st,old,bd,
-                  why=sprintf('removing (%s) from col %s',paste(q,collapse=' '),i),
-                  wait=trc
-               )
+               for(ir in (1:n)[-ccol[,j]]) st <- rmvij(st,ir,rc,cun)
+               why <- sprintf('removing (%s) from col %s by union rule',
+                  paste(cun,collapse=' '),rc)
+               update(st,old,bd,why,wait=trc)
+               break
             }
-            same <- apply(pairs,2,itest,row=i)
-            if (any(same)) {              ## Examine row i
-               old <- st
-               ij <- pairs[,same]
-               q <- getij(st,i,ij[1])
-               for(jc in setdiff(1:n,pairs[,same])) st <- rmvij(st,i,jc,q)
-               update(st,old,bd,
-                  why=sprintf('removing (%s) from row %s',paste(q,collapse=' '),i),
-                  wait=trc
-               )
-            }
+
+            if (any(numst(st)-chg != 0)) break
          }
          if (any(numst(st)-chg != 0)) break
       }
+
       if (any(numst(st)-chg != 0)) next
 
       # ***Rule 4*** Lonely digits
