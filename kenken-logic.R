@@ -585,6 +585,8 @@ update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
    ##          if NA, just display the solution (answer mode)
    ##          if TRUE stop before each change (tutorial mode)
    ##          if FALSE progressively show each change to the grid (movie mode)
+   ##   odo  - not formally a parameter, but if set through environment, will
+   ##          display progress odometer (or not)
 
    ## If prompt made, any non-blank response will quit processing
 
@@ -594,10 +596,13 @@ update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
       return(new)
 
    .N. <<- .N. + 1                     ## count steps
+
+   if (!exists('odo')) odo <- TRUE     ## odometer control
    if (is.na(wait)) {
-      cat('\rStep',.N.)
+      if (odo) cat('\rStep',.N.)
       return(new)
    }
+
    if (!is.na(why) && wait)            ## write out reason for change to grid
       q <- readline(paste(why,'...'))  ##    wait for go-ahead
    else
@@ -610,11 +615,12 @@ update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
    new
 }
 
-ksolve <- function(file,N=1,trc=TRUE) {
+ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
    ## file  - file name with grid description
    ## N     - which grid in file to solve (first is default)
    ## trc   - controls whether there is a pause before making each
    ##         solution step after writing an explanation for it
+   ## odo   - turn on/off odometer when trc=NA
 
    ## With this solution algorithm, the number of steps required to solve an
    ## nxn grid goes according to the formula,
@@ -634,6 +640,7 @@ ksolve <- function(file,N=1,trc=TRUE) {
    gr <- attr(bd,'grid')                  ## Get initial grid
    m <- attr(bd,'map')                    ## get grid map
    environment(pgr)$ID <- attr(bd,'ID')   ## get grid ID
+   environment(update)$odo <- odo         ## odometer setting
    st <- igrid(gr)                        ## load initial state
    n <- dim(m)[1]
 
