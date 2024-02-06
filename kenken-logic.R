@@ -648,6 +648,9 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
    .N. <<- 0
    repeat {                               ## cycle through solution steps
+
+      if (all(numst(st) == 1)) break      ## might be done now
+
       chg <- numst(st)
 
       # ***Rule 1*** Lone digits
@@ -744,8 +747,6 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
       }
 
       if (any(numst(st)-chg != 0)) next
-
-      if (all(numst(st) == 1)) break      ## might be done now
 
       # ***Rule 5*** Cross-row eliminate
       for(d in 1:n) {                     ## digit under test
