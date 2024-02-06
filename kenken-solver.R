@@ -18,7 +18,7 @@ div <- function(m){                    ## / op
 
    # This function redefines itself after calculating look-up table for
    # unordered integer division.  It uses the lookup table to speed up the
-   # result.
+   # result, slightly (by ~0.6%).
    uid <- function(m,n){               ## unordered integer division
       mn <- m %/% n; mn[ m%%n != 0 | m <  n] <- 0L # result when m >= n or 0
       nm <- n %/% m; nm[ n%%m != 0 | n <= m] <- 0L # result when m <  n or 0
