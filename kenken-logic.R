@@ -18,7 +18,7 @@ div <- function(m){                    ## / op
 
    # This function redefines itself after calculating look-up table for
    # unordered integer division.  It uses the lookup table to speed up the
-   # result.
+   # result, slightly (by ~0.6%).
    uid <- function(m,n){               ## unordered integer division
       mn <- m %/% n; mn[ m%%n != 0 | m <  n] <- 0L # result when m >= n or 0
       nm <- n %/% m; nm[ n%%m != 0 | n <= m] <- 0L # result when m <  n or 0
@@ -747,8 +747,71 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
       if (all(numst(st) == 1)) break      ## might be done now
 
-      # ***Rule 5*** Pair interactions
+      # ***Rule 5*** Cross-row eliminate
+      for(d in 1:n) {                     ## digit under test
+         dd <- outer(1:n,1:n,Vectorize(   ## this digit possible in each cell?
+            function(ir,jc)d %in% getij(st,ir,jc)
+         ))
+         dij <- which(dd,arr=TRUE)        ## return digit location array indices
+         for(ncr in 2:(n-1)) {
+            cmbn <- combn(1:n,ncr)        ## generate combinations
+            for(ir in 1:ncol(cmbn)) {     ## row combinations
+               cols <- vector()
+               for(jc in 1:ncr) {         ## each of the rows in the combination
+                  cols <- union(cols,dij[dij[,1] == cmbn[jc,ir],2])
+               }
+               if (length(cols) > ncr)    ## small enough group?
+                  next                    ## nope
+               if (!any(dd[-cmbn[,ir],cols]))
+                  next                    ## ...but there's nothing to remove
+               why <- sprintf(
+                  paste("%s must be in cols (%s) of rows %s,",
+                        "so it can't be in the other rows"),d,
+                  paste(cols,collapse=' '),
+                  paste(cmbn[,ir],collapse=' & ')
+               )
+               old <- st
+               for(j in cols)
+                  for(i in (1:n)[-cmbn[,ir]])
+                     st <- rmvij(st,i,j,d)
+               update(st,old,bd, why, wait=trc)
+               break
+            }
+
+            if (any(chg - numst(st) != 0)) break
+
+            for(ir in 1:ncol(cmbn)) {     ## now column combinations
+               rows <- vector()
+               for(jc in 1:ncr) {         ## each of the cols in the combination
+                  rows <- union(rows,dij[dij[,2] == cmbn[jc,ir],1])
+               }
+               if (length(rows) > ncr)    ## small enough group?
+                  next                    ## nope
+               if (!any(dd[rows,-cmbn[,ir]]))
+                  next                    ## ...but there's nothing to remove
+               why <- sprintf(
+                  paste("%s must be in rows (%s) of cols %s,",
+                        "so it can't be in the other cols"),d,
+                  paste(rows,collapse=' '),
+                  paste(cmbn[,ir],collapse=' & ')
+               )
+               old <- st
+               for(i in rows)
+                  for(j in (1:n)[-cmbn[,ir]])
+                     st <- rmvij(st,i,j,d)
+               update(st,old,bd, why, wait=trc)
+               break
+            }
+            if (any(chg - numst(st) != 0)) break
+         }
+         if (any(chg - numst(st) != 0)) break
+      }
+
+      if (any(chg - numst(st) != 0)) next
+
+      # ***Rule 6*** Pair interactions
       gpr <- combn(1:length(bd),2)        ## group - group pairwise interaction
+      new <- st
       for(i in 1:length(gpr[1,])){
          gp1 <- bd[[gpr[1,i]]]
          gp2 <- bd[[gpr[2,i]]]
@@ -768,9 +831,17 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
       if (any(numst(st)-chg != 0)) next
 
-      # ***Rule 6*** Triplet interactions
+      # ***Rule 7*** Triplet interactions
+      if (is.null(attr(bd,'area'))) 
+         attr(bd,'area') <- vapply(bd,    ## classify into area they cover
+            function(gp)length(unique(gp$row))*length(unique(gp$col)),
+            0L)
+      area <- attr(bd,'area')
       gpr <- combn(1:length(bd),3)        ## group triplet interaction
-      for(i in 1:length(gpr[1,])){        ## some heuristics could help here
+      score <- apply(gpr,2,function(v)sum(area[v]))
+      gpr <-                              ## sort into groups with biggest areas
+         gpr[,sort(score,dec=TRUE,index=TRUE)$ix] 
+      for(i in 1:length(gpr[1,])){        ## sorting hopefully gets a hit fast
          gp1 <- bd[[gpr[1,i]]]
          gp2 <- bd[[gpr[2,i]]]
          gp3 <- bd[[gpr[3,i]]]
@@ -784,9 +855,13 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
       if (any(numst(st)-chg != 0)) next
 
-      # ***Rule 7*** Quadruplet interactions
+      # ***Rule 8*** Quadruplet interactions
       gpr <- combn(1:length(bd),4)        ## this is getting ridiculous, but
-      for(i in 1:length(gpr[1,])){        ## I've seen one 6x6 that needs this
+                                          ## I've seen one 6x6 that needs this
+      score <- apply(gpr,2,function(v)sum(area[v]))
+      gpr <-                              ## sort into groups with biggest areas
+         gpr[,sort(score,dec=TRUE,index=TRUE)$ix] 
+      for(i in 1:length(gpr[1,])){
          gp1 <- bd[[gpr[1,i]]]
          gp2 <- bd[[gpr[2,i]]]
          gp3 <- bd[[gpr[3,i]]]
