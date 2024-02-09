@@ -254,3 +254,6 @@ References
 - [Wolfram community discussion](https://community.wolfram.com/groups/-/m/t/613040) on solving Kenken puzzles.
 
 - Caleb Sander's [solving rules](https://github.com/calebsander/kenken-maker).
+
+- [UNC paper](https://webpages.charlotte.edu/~hbreiter/NCTM.pdf) on Kenken
+solving skills (mathematical).
