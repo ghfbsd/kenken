@@ -621,14 +621,44 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          next                             ## Restart if square solved
       }
 
-      # ***Rule 2*** Arithmetical constraints
+      # ***Rule 2*** Lonely digits
+      chkr <- function(ir,q)
+         vapply(1:n,function(i) q %in% getij(st,ir,i), TRUE)
+      chkc <- function(jc,q)
+         vapply(1:n,function(i) q %in% getij(st,i,jc), TRUE)
+
+      for(digit in 1:n) {                 ## Search for only possible digit loc
+         for(ir in 1:n) {                 ## Search for loner in each row
+            got <- chkr(ir,digit)
+            if (sum(got) == 1) {
+               jc <- which(got)
+               new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
+               why <- sprintf('only %s in row %s is in col %s',digit,ir,jc)
+               st <- update(new,st,bd,why=why,wait=trc)
+            }
+         }
+
+         for(jc in 1:n) {                 ## Search for loner in each col
+            got <- chkc(jc,digit)
+            if (sum(got) == 1) {
+               ir <- which(got)
+               new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
+               why <- sprintf('only %s in col %s is in row %s',digit,jc,ir)
+               st <- update(new,st,bd,why=why,wait=trc)
+            }
+         }
+      }
+
+      if (any(numst(st)-chg != 0)) next
+
+      # ***Rule 3*** Arithmetical constraints
       for(grp in bd) {                    ## Winnow based on numerical ops
          nw <- sel(st,grp)
          st <- update(nw,st,bd, why=grpname(grp,bd),wait=trc)
       }
       if (any(numst(st) - chg != 0)) next ## Re-start if something changed
 
-      # ***Rule 3*** Union rule
+      # ***Rule 4*** Union rule
       for(rc in 1:n) {                    ## Check each row / col
          for(i in 2:n) {                  ## ...for repeated pairs, triples, ...
             ccol <- combn(n,i)
@@ -670,36 +700,6 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
             if (any(numst(st)-chg != 0)) break
          }
          if (any(numst(st)-chg != 0)) break
-      }
-
-      if (any(numst(st)-chg != 0)) next
-
-      # ***Rule 4*** Lonely digits
-      chkr <- function(ir,q)
-         vapply(1:n,function(i) q %in% getij(st,ir,i), TRUE)
-      chkc <- function(jc,q)
-         vapply(1:n,function(i) q %in% getij(st,i,jc), TRUE)
-
-      for(digit in 1:n) {                 ## Search for only possible digit loc
-         for(ir in 1:n) {                 ## Search for loner in each row
-            got <- chkr(ir,digit)
-            if (sum(got) == 1) {
-               jc <- which(got)
-               new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
-               why <- sprintf('only %s in row %s is in col %s',digit,ir,jc)
-               st <- update(new,st,bd,why=why,wait=trc)
-            }
-         }
-
-         for(jc in 1:n) {                 ## Search for loner in each col
-            got <- chkc(jc,digit)
-            if (sum(got) == 1) {
-               ir <- which(got)
-               new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
-               why <- sprintf('only %s in col %s is in row %s',digit,jc,ir)
-               st <- update(new,st,bd,why=why,wait=trc)
-            }
-         }
       }
 
       if (any(numst(st)-chg != 0)) next
