@@ -500,50 +500,6 @@ numgr <- function(grp,st) {
    vapply(1:grp$n, function(i) numij(st,grp$row[i],grp$col[i]), 0L)
 }
 
-allgi <- function(bd,ir) {
-   ## Which groups are only in a row?
-   ##   bd - board (list of groups; see board description)
-   ##   ir - row
-
-   ## Returns a vector, one element for each group, saying if all the cells
-   ##    are in row ir
-
-   vapply(bd, function(grp) all(grp$row == ir), TRUE)
-}
-
-anygi <- function(bd,ir) {
-   ## Which groups are in a row?
-   ##   bd - board (list of groups; see board description)
-   ##   ir - row
-
-   ## Returns a vector, one element for each group, saying if any cell
-   ##   is in row ir
-
-   vapply(bd, function(grp) any(grp$row == ir), TRUE)
-}
-
-allgj <- function(bd,jc) {
-   ## Which groups are only in a column?
-   ##   bd - board (list of groups; see board description)
-   ##   jc - column
-
-   ## Returns a vector, one element for each group, saying if all the cells
-   ##   are in column jc
-
-   vapply(bd, function(grp) all(grp$col == jc), TRUE)
-}
-
-anygj <- function(bd,jc) {
-   ## Which groups are in a column?
-   ##   bd - board (list of groups; see board description)
-   ##   jc - column
-
-   ## Returns a vector, one element for each group, saying if any cell
-   ##   is in column jc
-
-   vapply(bd, function(grp) any(grp$col == jc), TRUE)
-}
-
 `%$%` <- function(grp, key) {
    ## Gets key= value from a list of lists
    ##   implements the binary operator L %$% 'key'
@@ -728,7 +684,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          for(ir in 1:n) {                 ## Search for loner in each row
             got <- chkr(ir,digit)
             if (sum(got) == 1) {
-               jc <- (1:n)[got]
+               jc <- which(got)
                new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
                why <- sprintf('only %s in row %s is in col %s',digit,ir,jc)
                st <- update(new,st,bd,why=why,wait=trc)
@@ -738,7 +694,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          for(jc in 1:n) {                 ## Search for loner in each col
             got <- chkc(jc,digit)
             if (sum(got) == 1) {
-               ir <- (1:n)[got]
+               ir <- which(got)
                new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
                why <- sprintf('only %s in col %s is in row %s',digit,jc,ir)
                st <- update(new,st,bd,why=why,wait=trc)
