@@ -608,7 +608,16 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
    if (!is.na(trc)) pgr(n,m,bd,st)        ## display initial grid layout
 
    .N. <<- 0L
-   .R. <<- rep(0L,8)                      ## Count rules used
+   .R. <<- c(                             ## Count rules used
+      SD=0L,                              ## Single digit (lone digit)
+      OP=0L,                              ## Only possible (lonely digit)
+      AOP=0L,                             ## Arithmetic op
+      UR=0L,                              ## Union rule
+      CRE=0L,                             ## Cross-row elimination
+      PI=0L,                              ## Pair interactions
+      TI=0L,                              ## Triplet interactions
+      QI=0L                               ## Quadruplet interactions
+   )
    repeat {                               ## cycle through solution steps
 
       if (all(numst(st) == 1)) break      ## might be done now
