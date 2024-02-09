@@ -803,7 +803,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
       gpr <- combn(1:length(bd),3)        ## group triplet interaction
       score <- apply(gpr,2,function(v)sum(area[v]))
       gpr <-                              ## sort into groups with biggest areas
-         gpr[,sort(score,dec=TRUE,index=TRUE)$ix] 
+         gpr[,sort(score,dec=FALSE,index=TRUE)$ix] 
       for(i in 1:length(gpr[1,])){        ## sorting hopefully gets a hit fast
          gp1 <- bd[[gpr[1,i]]]
          gp2 <- bd[[gpr[2,i]]]
@@ -823,7 +823,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                                           ## I've seen one 6x6 that needs this
       score <- apply(gpr,2,function(v)sum(area[v]))
       gpr <-                              ## sort into groups with biggest areas
-         gpr[,sort(score,dec=TRUE,index=TRUE)$ix] 
+         gpr[,sort(score,dec=FALSE,index=TRUE)$ix] 
       for(i in 1:length(gpr[1,])){
          gp1 <- bd[[gpr[1,i]]]
          gp2 <- bd[[gpr[2,i]]]
