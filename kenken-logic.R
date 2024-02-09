@@ -532,8 +532,9 @@ gotu <- function(st,ij) {
    st
 }
 
-update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
+update <- function(rule,new,old,bd,why=NA,wait=FALSE,q='') {
    ## Update - update new grid state from old
+   ##   rule - rule number
    ##   new  - new grid state array
    ##   old  - old grid state array
    ##   bd   - board layout list
@@ -544,6 +545,9 @@ update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
    ##   odo  - not formally a parameter, but if set through environment, will
    ##          display progress odometer (or not)
 
+   ## Return value is a vector of the number of times each rule was applied
+   ##   in solving the puzzle.
+
    ## If prompt made, any non-blank response will quit processing
 
    stopifnot(typeof(new) == 'integer')
@@ -551,7 +555,8 @@ update <- function(new,old,bd,why=NA,wait=FALSE,q='') {
    if (all(new[,,1] == old[,,1]))      ## if nothing changes, no grid redrawing
       return(new)
 
-   .N. <<- .N. + 1                     ## count steps
+   .N. <<- .N. + 1L                    ## count steps
+   .R.[rule] <<- .R.[rule] + 1L        ## count rule usage
 
    if (!exists('odo')) odo <- TRUE     ## odometer control
    if (is.na(wait)) {
@@ -602,7 +607,8 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
    if (!is.na(trc)) pgr(n,m,bd,st)        ## display initial grid layout
 
-   .N. <<- 0
+   .N. <<- 0L
+   .R. <<- rep(0L,8)                      ## Count rules used
    repeat {                               ## cycle through solution steps
 
       if (all(numst(st) == 1)) break      ## might be done now
@@ -614,7 +620,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
       if (nrow(ix)>0) for(i in 1:nrow(ix)) {
          ij <- ix[i,]
          nw <- gotu(st,ij)
-         st <- update(nw,st,bd,
+         st <- update(1,nw,st,bd,
             why=sprintf("know %s is at (%s,%s)",st[ij[1],ij[2],2],ij[1],ij[2]),
             wait=trc
          )
@@ -634,7 +640,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                jc <- which(got)
                new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
                why <- sprintf('only %s in row %s is in col %s',digit,ir,jc)
-               st <- update(new,st,bd,why=why,wait=trc)
+               st <- update(2,new,st,bd,why=why,wait=trc)
             }
          }
 
@@ -644,7 +650,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                ir <- which(got)
                new <- rmvij(st,ir,jc,as.integer(setdiff(getij(st,ir,jc),digit)))
                why <- sprintf('only %s in col %s is in row %s',digit,jc,ir)
-               st <- update(new,st,bd,why=why,wait=trc)
+               st <- update(2,new,st,bd,why=why,wait=trc)
             }
          }
       }
@@ -654,7 +660,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
       # ***Rule 3*** Arithmetical constraints
       for(grp in bd) {                    ## Winnow based on numerical ops
          nw <- sel(st,grp)
-         st <- update(nw,st,bd, why=grpname(grp,bd),wait=trc)
+         st <- update(3,nw,st,bd, why=grpname(grp,bd),wait=trc)
       }
       if (any(numst(st) - chg != 0)) next ## Re-start if something changed
 
@@ -675,7 +681,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                for(jc in (1:n)[-ccol[,j]]) st <- rmvij(st,rc,jc,cun)
                why <- sprintf('removing (%s) from row %s by union rule',
                   paste(cun,collapse=' '),rc)
-               update(st,old,bd,why,wait=trc)
+               update(4,st,old,bd,why,wait=trc)
                break
             }
             if (any(numst(st)-chg != 0)) break
@@ -693,7 +699,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                for(ir in (1:n)[-ccol[,j]]) st <- rmvij(st,ir,rc,cun)
                why <- sprintf('removing (%s) from col %s by union rule',
                   paste(cun,collapse=' '),rc)
-               update(st,old,bd,why,wait=trc)
+               update(4,st,old,bd,why,wait=trc)
                break
             }
 
@@ -702,7 +708,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          if (any(numst(st)-chg != 0)) break
       }
 
-      if (any(numst(st)-chg != 0)) next
+      if (any(numst(st)-chg != 0)) next   ## Restart if something changed
 
       # ***Rule 5*** Cross-row eliminate
       for(d in 1:n) {                     ## digit under test
@@ -731,7 +737,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                for(j in cols)
                   for(i in (1:n)[-cmbn[,ir]])
                      st <- rmvij(st,i,j,d)
-               update(st,old,bd, why, wait=trc)
+               update(5,st,old,bd, why, wait=trc)
                break
             }
 
@@ -756,7 +762,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
                for(i in rows)
                   for(j in (1:n)[-cmbn[,ir]])
                      st <- rmvij(st,i,j,d)
-               update(st,old,bd, why, wait=trc)
+               update(5,st,old,bd, why, wait=trc)
                break
             }
             if (any(chg - numst(st) != 0)) break
@@ -764,7 +770,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          if (any(chg - numst(st) != 0)) break
       }
 
-      if (any(chg - numst(st) != 0)) next
+      if (any(chg - numst(st) != 0)) next ## Restart if something changed
 
       # ***Rule 6*** Pair interactions
       gpr <- combn(1:length(bd),2)        ## group - group pairwise interaction
@@ -784,7 +790,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
             if (any(chg - numst(new) != 0)) break
          }
       }
-      st <- update(new,st,bd, why=why, wait=trc)
+      st <- update(6,new,st,bd, why=why, wait=trc)
 
       if (any(numst(st)-chg != 0)) next
 
@@ -808,7 +814,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          )
          if (any(chg - numst(new) != 0)) break
       }
-      st <- update(new,st,bd, why=why, wait=trc)
+      st <- update(7,new,st,bd, why=why, wait=trc)
 
       if (any(numst(st)-chg != 0)) next
 
@@ -829,7 +835,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
          )
          if (any(chg - numst(new) != 0)) break
       }
-      st <- update(new,st,bd, why=why, wait=trc)
+      st <- update(8,new,st,bd, why=why, wait=trc)
 
       if (all(numst(st)-chg == 0)) break
    }
@@ -837,6 +843,8 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
    if (all(numst(st) == 1)) {
       cat("\nSolved in",.N.,"steps\n")
       if (is.na(trc)) print(st[,,2])
+      return(.R.)
    }
    if (any(numst(st) != 1)) cat('\n***STUCK!*** after',.N.,'steps\n')
+   .R.
 }
