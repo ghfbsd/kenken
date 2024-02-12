@@ -232,10 +232,8 @@ igrid <- function(grid){
    new <- array(0L,dim=c(n,n,n+1))
    for(i in 1:n)for(j in 1:n) new[i,j,] <- c(n,1:n)
    ix <- which(!is.na(grid),arr=TRUE)
-   for(i in seq_along(ix[,1])){
-      new[ix[i,1],ix[i,2],1] <- 1L
-      new[ix[i,1],ix[i,2],2] <- grid[ix[i,1],ix[i,2]]
-   }
+   for(i in seq_along(ix[,1]))
+      new[ix[i,1],ix[i,2],] <- c( 1L, grid[ix[i,1],ix[i,2]], rep(0L,n-1) )
    new
 }
 
@@ -297,7 +295,7 @@ sel <- function(st,...) {
    ##   st -  state of grid
    ##   ... - 1 or more groups to consider given the grid state
 
-   ## Returns an updates grid state (may or may not be different from original)
+   ## Returns an updated grid state (may or may not be different from original)
    ##   given the arithmetical constraints in each group, and the interactions
    ##   between the other groups.
 
