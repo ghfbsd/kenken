@@ -290,14 +290,21 @@ winnow <- function(grp,choices) {
    choices[chk & !dups,,drop=FALSE]            ## these are OK
 }
 
-sel <- function(st,...) {
+sel <- function(st,...,bd=NA,wait=NA) {
    ## Select which combinations make sense for the grid in its present state
    ##   st -  state of grid
    ##   ... - 1 or more groups to consider given the grid state
+   ##   bd -  board layout (optional)
+   ##   wait - whether to wait when providing solution description (optional)
 
    ## Returns an updated grid state (may or may not be different from original)
    ##   given the arithmetical constraints in each group, and the interactions
    ##   between the other groups.
+
+   ## Optional parameters bd and wait only apply when ... is a single group.
+   ##   In this case, a heuristic for a linear group layout can eliminate
+   ##   possibilities.  These parameters are needed to describe the elimination
+   ##   step.
 
    n <- dim(st)[1]
 
@@ -415,6 +422,44 @@ sel <- function(st,...) {
    } else {                                    ## simple case of just one group
       grp <- ...elt(1)
       choices <- clist[[1]]
+      if (length(rown) == 1) {                 ## try excluding other row boxes
+         ir <- grp$row[1]
+         kc <- (1:n)[-coln]                    ## the other column boxes
+         for(d in unique(as.vector(choices))) {
+            dall <- TRUE                       ## testing for d all choices
+            for(k in 1:nrow(choices)) dall <- dall & d %in% choices[k,]
+            if (dall &&                        ## it is there - anywhere else?
+                any(sapply(allij(st,rep(ir,length(kc)),kc),function(s)d %in% s))
+            ) {
+               why <- sprintf("%s can't be anywhere in row %s except in %s",
+                  d,ir,grpname(grp,bd)
+               )
+               old <- st
+               for(k in kc)                    ## gotcha
+                  st <- rmvij(st,ir,k,d)
+               update(3,st,old,bd,why=why,wait=wait)
+            }
+         }
+      }
+      if (length(coln) == 1) {                 ## try excluding other col boxes
+         jc <- grp$col[1]
+         kr <- (1:n)[-rown]                    ## the other row boxes
+         for(d in unique(as.vector(choices))) {
+            dall <- TRUE                       ## testing for d in all choices
+            for(k in 1:nrow(choices)) dall <- dall & d %in% choices[k,]
+            if (dall &&                        ## it is there - anywhere else?
+                any(sapply(allij(st,kr,rep(jc,length(kr))),function(s)d %in% s))
+            ) {
+               why <- sprintf("%s can't be anywhere in col %s except in %s",
+                  d,jc,grpname(grp,bd)
+               )
+               old <- st
+               for(k in kr)                    ## gotcha
+                  st <- rmvij(st,k,jc,d)
+               update(3,st,old,bd,why=why,wait=wait)
+            }
+         }
+      }
       for(i in 1:grp$n) {
          poss <- unique(choices[,i])
          st[grp$row[i],grp$col[i],] <-         ## those are the cell's possibles
@@ -666,7 +711,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
 
       # ***Rule 3*** Arithmetical constraints
       for(grp in bd) {                    ## Winnow based on numerical ops
-         nw <- sel(st,grp)
+         nw <- sel(st,grp,bd=bd,wait=trc)
          st <- update(3,nw,st,bd, why=grpname(grp,bd),wait=trc)
       }
       if (any(numst(st) - chg != 0)) next ## Re-start if something changed
