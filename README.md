@@ -102,7 +102,8 @@ and then print `/tmp/grid.eps` for your solution enjoyment.
 GETTING GRIDS
 =============
 
-Transcribe them from your local newspaper into the grid format, or, if you
+Transcribe them from your local newspaper into the grid format,
+[generate some on your own](https://github.com/ghfbsd/kenken-maker), or, if you
 know a puzzle number, download them from the puzzle creation site based on the
 puzzle number.  Install the download tool in a directory accessible in your
 search path, say /usr/local/bin, by
