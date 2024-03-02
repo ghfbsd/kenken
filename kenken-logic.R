@@ -713,6 +713,7 @@ ksolve <- function(file,N=1,trc=TRUE,odo=TRUE) {
       for(grp in bd) {                    ## Winnow based on numerical ops
          nw <- sel(st,grp,bd=bd,wait=trc)
          st <- update(3,nw,st,bd, why=grpname(grp,bd),wait=trc)
+         if (any(numst(st) - chg != 0)) break
       }
       if (any(numst(st) - chg != 0)) next ## Re-start if something changed
 
