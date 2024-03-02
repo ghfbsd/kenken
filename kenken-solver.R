@@ -229,6 +229,7 @@ ksolve <- function(file,N=1,trc=FALSE,odo=TRUE,rev=FALSE,all=FALSE){
 
    ## Set up call count and odometer display if requested (and not tracing)
    n <<- 0
+   if (is.na(trc)) trc <- FALSE
    odo <- c(ifelse(odo & !trc,1,0),length(ix))
    rsol <<- list()
 
