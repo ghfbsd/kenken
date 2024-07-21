@@ -163,7 +163,7 @@ ok=$(echo "$1" |
 ## Get authorization token from web site, save for future use
 if [ ! -e ".auth.txt" ]; then
    curl -s -L -b .cookies.txt -c .cookies.txt "https://www.kenkenpuzzle.com/play_now" |
-   sed -nE '/input.*authenticity_token/{s:.*auth.*value="([0-9a-zA-Z+/=]*)".*:\1:;p;q;}' \
+   sed -nE '/input.*authenticity_token/{s:.*auth.*value="([0-9a-zA-Z+/=_-]*)".*:\1:;p;q;}' \
    > .auth.txt
 fi
 
@@ -175,7 +175,7 @@ curl -s -L -b .cookies.txt -c .cookies.txt \
    --data-urlencode "x=0" \
    --data-urlencode "y=0" \
    "https://www.kenkenpuzzle.com/find_puzzle" |
-  sed -nE '/base64/{s:.*'"'"'([0-9a-zA-Z+/=]*)'"'"'.*:\1:;p;q;}' |
+  sed -nE '/puzzle_data/{s:.*'"'"'([0-9a-zA-Z+/=]*)'"'"'.*:\1:;p;q;}' |
   base64 -D > $tmp
 
 ## Process:
