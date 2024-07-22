@@ -44,13 +44,11 @@ add <- function(m)apply(m,1,sum)       ## + op
 board<-function(file,N=1) {
    ## Read in kenken description.  Returns list of groups with attribute 'grid'
    ## which represents the initial board state.
-   ## grp list(key='name', n=n, row=c(...), col=c(...), op=x, opn=m, bag=NULL)
+   ## grp list(key='name', n=n, row=c(...), col=c(...), op=x, opn=m)
    ##   n - # squares
    ##   row[1..n], col[1..n] - row, col for square
    ##   op - '+', '-', 'x', '/' - operation
    ##   opn - operation result
-   ##   bag - certain digits in this group derived from known grid values,
-   ##         constraints from other groups in same row & column; unordered.
    txt<-readLines(file,n=-1)
 
    ## Extract number of individual puzzles.
@@ -155,13 +153,11 @@ pgr <- function(n,map=NA,gps=NA,grid=NA,wait=FALSE){
 
    # Coordinate system: (1,1) on top left, (n,n) on bottom right (like a matrix)
 
-   ## grp list(key='name', n=n, row=c(...), col=c(...), op=x, opn=m, bag=NULL)
+   ## grp list(key='name', n=n, row=c(...), col=c(...), op=x, opn=m)
    ##   n - # squares
    ##   row[1..n], col[1..n] - row, col for square
    ##   op - '+', '-', 'x', '/' - operation
    ##   opn - operation result
-   ##   bag - certain digits in this group derived from known grid values,
-   ##         constraints from other groups in same row & column; unordered.
 
    plot(NA,NA,                            # define board
       bty='n', xaxt='n', yaxt='n',
