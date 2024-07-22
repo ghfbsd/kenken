@@ -25,7 +25,7 @@
 mode=${2:-parsed} tmp=/tmp/tmp$$
 trap "/bin/rm -f $tmp" EXIT
 usage() {
-   [ $# -gt 0 ] && echo "$*" >&2
+   [ $# -gt 0 ] && echo "**$*" >&2
    echo "usage: $0 PUZZLE_ID { raw | cooked | parsed | solved }" >&2
    exit 1
 }
@@ -52,7 +52,7 @@ translate() {
          DOTS="........."
          ID="'"$1"'"
       }
-      func err(txt){printf "%s (line %d)\n",txt,NR > "/dev/tty" ; exit 1}
+      func err(txt){printf "**%s (line %d)\n",txt,NR > "/dev/tty" ; exit 1}
       func pgrid(i,j,l){
          ## Prints grid via pgrid(); n.b.: i,j,l local variables, not args
          for(i=1;i<=gs;i++){
@@ -71,12 +71,12 @@ translate() {
                for(k=j+1; k<=gs; k++){ g[j,k] = "."; g[k,j] = "."}
             }
          }
-         if (i > 1 && NF != gs) err("**A inconsistent")
+         if (i > 1 && NF != gs) err("A inconsistent")
          ans = ans " " $0
       }
       pt=="T" && /[0-9][0-9 ]*/{
          ## Process op value part
-         if (NF != gs) err("**T line does not have " gs " elements")
+         if (NF != gs) err("T line does not have " gs " elements")
          if (i == 0) gn = 0
          i += 1;
          for(n=1;n<=NF;n++){
@@ -88,14 +88,14 @@ translate() {
       }
       pt=="S" && /[0+*\/1-] [0+*\/1- ]*/{
          ## Process op name part
-         if (NF != gs) err("**S line does not have " gs " elements")
+         if (NF != gs) err("S line does not have " gs " elements")
          if (i == 0) gn = 0
          i += 1;
          for(n=1;n<=NF;n++){
             k = $(n); if (k == "*") k = "x"
             if ("0" != k) {
                gn += 1; gi = substr(LETTERS,gn,1)
-               if (gr[gi] != i || gc[gi] != n) err("**T/S mismatch line " i)
+               if (gr[gi] != i || gc[gi] != n) err("T/S mismatch line " i)
                if (k == "1") g[i,n] = gv[gi]; else g[i,n] = gi
                go[gi] = k
             }
@@ -103,7 +103,7 @@ translate() {
       }
       pt=="V" && /[01] [01 ]*/{
          ## Vertical bars separating cells in row i
-         i += 1; if (NF != gs-1) err("**V line has " NF " entries, not " gs-1)
+         i += 1; if (NF != gs-1) err("V line has " NF " entries, not " gs-1)
          for(n=1;n<=NF;n++){
             if ("0" == $(n)) g[i,n+1] = g[i,n]
             vv[i,n] = $(n)
@@ -111,7 +111,7 @@ translate() {
       }
       pt=="H" && /[01] [01 ]*/{
          ## Horizontal bars separating cells in col i
-         i += 1; if (NF != gs-1) err("**H line has " NF " entries, not " gs-1)
+         i += 1; if (NF != gs-1) err("H line has " NF " entries, not " gs-1)
          for(n=1;n<=NF;n++){
             if ("0" == $(n)) g[n+1,i] = g[n,i]
             hh[i,n] = $(n)
@@ -155,10 +155,10 @@ translate() {
 [ $# -ge 1 ] || usage
 
 ok=$(echo "$1" |
-   awk 'BEGIN{res="BAD"} /[0-9][0-9]*/{res="OK"} END{print res}'
+   awk 'BEGIN{res="BAD"} /[0-9][0-9]*$/{res="OK"} END{print res}'
 )
 
-[ $ok = "OK" ] || usage "**Bad puzzle ID (should be a number)"
+[ $ok = "OK" ] || usage "Bad puzzle ID (should be a number)"
 
 ## Get authorization token from web site, save for future use
 if [ ! -e ".auth.txt" ]; then
@@ -222,5 +222,5 @@ elif [ "$mode" = "parsed" ]; then
 
 else
    ## Anything else is an error
-   usage "**Don't recognize arg \"${mode}\""
+   usage "Don't recognize arg \"${mode}\""
 fi
